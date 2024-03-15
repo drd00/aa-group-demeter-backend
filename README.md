@@ -1,4 +1,4 @@
-# aa-group-demeter-backend
+# Adaptive Applications: Group Demeter backend
 This is the backend repository for Group Demeter in the Adaptive Applications module at Trinty College Dublin.
 
 The application implements API endpoints which interact with an SQLite database to facilitate a personalised experience for users.
