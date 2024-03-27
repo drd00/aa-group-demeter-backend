@@ -1,3 +1,6 @@
+# Firebase authentification details
+serviceAccountKey.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

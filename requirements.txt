@@ -1,2 +1,5 @@
 flask
 flask-restful
+python-dotenv
+requests
+firebase-admin

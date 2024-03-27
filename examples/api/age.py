@@ -13,4 +13,3 @@ class Age(Resource):
         c = conn.cursor()
         c.execute("SELECT age FROM user_info WHERE id=?", (id,))
         return {'age': c.fetchall()}
-    
