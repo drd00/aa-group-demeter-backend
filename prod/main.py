@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 from api.security.firebase import initialise_firebase
-from api.user import User
+from prod.api.profile import Profile 
 from api.searchfood import SearchFood
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -23,7 +23,7 @@ app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(SearchFood, '/searchfood/<string:food_name>')
-api.add_resource(User, '/user/<int:id>')
+api.add_resource(Profile, '/profile/<int:id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
