@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from db.profile import verify_profiletable, get_profile, create_profile
+from api.db.profile import verify_profiletable, get_profile, create_profile
 from api.security.verify_token import verify_token
 
 class Profile(Resource):
@@ -11,18 +11,18 @@ class Profile(Resource):
         profile = get_profile(uid)
 
         if profile is None:
-            return jsonify({"status": 404, "message": "Profile not found"})
+            return {'message': 'Profile not found'}, 404
         
         return jsonify({
             "uid": profile[0],
-            "firstname": profile[1],
-            "lastname": profile[2],
-            "age": profile[3],
-            "weight": profile[4],
-            "goalweight": profile[5],
-            "height": profile[6],
-            "primarygoal": profile[7],
-            "activitylevel": profile[8]
+            "First Name": profile[1],
+            "Last Name": profile[2],
+            "Age": profile[3],
+            "Weight": profile[4],
+            "Goal Weight": profile[5],
+            "Height": profile[6],
+            "Primary Goal": profile[7],
+            "Activity Level": profile[8]
         })
     
     def post(self):
