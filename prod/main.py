@@ -7,6 +7,7 @@ import os
 from api.security.firebase import initialise_firebase
 from api.profile import Profile 
 from api.searchfood import SearchFood
+from api.diary import Diary
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 print(dotenv_path)
@@ -22,10 +23,12 @@ initialise_firebase()
 
 app = Flask(__name__)
 api = Api(app)
+
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 api.add_resource(SearchFood, '/searchfood/<string:food_name>')
 api.add_resource(Profile, '/profile')
+api.add_resource(Diary, '/diary')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000,debug=True)

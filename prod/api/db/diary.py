@@ -22,11 +22,11 @@ def clean_diarytable():
     conn.close()
 
 
-def get_diary(uid, date):
+def get_diary():
     conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), 'diary.db'))
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM diary WHERE uid = ? AND date = ?', (uid, date))
-    diary = cursor.fetchone()
+    cursor.execute('SELECT * FROM diary')
+    diary = cursor.fetchall()
     conn.close()
     return diary
 
@@ -42,4 +42,3 @@ def create_diary(uid, date, calories, protein, fat, carbs):
     conn.commit()
     conn.close()
     return uid
-
