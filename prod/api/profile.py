@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from api.db.profile import verify_profiletable, get_profile, create_profile
 from api.security.verify_token import verify_token
@@ -7,29 +7,41 @@ class Profile(Resource):
     method_decorators = [verify_token]
     def get(self):
         verify_profiletable()
-        uid = request.decoded_token['uid']
+        uid = request.args.get('uid')
         profile = get_profile(uid)
 
         if profile is None:
             return {'message': 'Profile not found'}, 404
         
-        return jsonify({
-            "uid": profile[0],
-            "First Name": profile[1],
-            "Last Name": profile[2],
-            "Age": profile[3],
-            "Weight": profile[4],
-            "Goal Weight": profile[5],
-            "Height": profile[6],
-            "Primary Goal": profile[7],
-            "Activity Level": profile[8]
-        })
+        return {
+            "uid": profile['uid'],
+            "firstName": profile['firstName'],
+            "lastName": profile['lastName'],
+            "age": profile['age'],
+            "weight": profile['weight'],
+            "goalWeight": profile['goalWeight'],
+            "height": profile['height'],
+            "activityLevel": profile['activityLevel']
+        }, 200
     
     def post(self):
         data = request.get_json()
-        uid = create_profile(data['firstname'], data['lastname'], data['age'], data['weight'], data['goalweight'], data['height'], data['primarygoal'], data['activitylevel'])
+        print(f"jsondata: {data}")
+        uid = create_profile(data['uid'], data['firstName'], data['lastName'], data['age'], data['weight'], data['goalWeight'], data['height'], data['activityLevel'])
 
         if uid == None:
-            return jsonify({"status": 400, "message": "Profile already exists"})
+            return {"message": "Profile already exists"}, 400
         
-        return jsonify({"status": 200})
+        return {"message": 'OK'}, 200
+    
+
+    # def put(self):
+    #     data = request.get_json()
+    #     uid = request.decoded_token['uid']
+    #     profile = get_profile(uid)
+
+    #     if profile is None:
+    #         return {'message': 'Profile not found'}, 404
+        
+    #     create_profile(uid, data['firstname'], data['lastname'], data['age'], data['weight'], data['goalweight'], data['height'], data['activitylevel'])
+

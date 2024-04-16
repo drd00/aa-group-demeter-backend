@@ -24,7 +24,7 @@ initialise_firebase()
 app = Flask(__name__)
 api = Api(app)
 
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}}, methods=["GET", "POST", "PUT", "DELETE"])
 
 api.add_resource(SearchFood, '/searchfood/<string:food_name>')
 api.add_resource(Profile, '/profile')
