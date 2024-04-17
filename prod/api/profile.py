@@ -5,9 +5,9 @@ from api.security.verify_token import verify_token
 
 class Profile(Resource):
     method_decorators = [verify_token]
-    def get(self):
+    def get(self, **kwargs):
         verify_profiletable()
-        uid = request.args.get('uid')
+        uid = kwargs.get('user_id')
         profile = get_profile(uid)
 
         if profile is None:
@@ -24,10 +24,12 @@ class Profile(Resource):
             "activityLevel": profile['activityLevel']
         }, 200
     
-    def post(self):
+    def post(self, **kwargs):
         data = request.get_json()
         print(f"jsondata: {data}")
-        uid = create_profile(data['uid'], data['firstName'], data['lastName'], data['age'], data['weight'], data['goalWeight'], data['height'], data['activityLevel'])
+        user_id = kwargs.get('user_id')
+        print(f"user_id: {user_id}")
+        uid = create_profile(user_id, data['firstName'], data['lastName'], data['age'], data['weight'], data['goalWeight'], data['height'], data['activityLevel'])
 
         if uid == None:
             return {"message": "Profile already exists"}, 400

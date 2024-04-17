@@ -11,7 +11,7 @@ def verify_token(f):
         try:
             token = token.split(" ")[1]
             decoded_token = firebase_auth.verify_id_token(token)
-            request.decoded_token = decoded_token
+            kwargs['user_id'] = decoded_token['uid']    # Pass user_id in kwargs
         except Exception as e:
             return jsonify({"message": 'Invalid token provided.', 'error': str(e)}), 403
         return f(*args, **kwargs)
