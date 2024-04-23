@@ -9,7 +9,7 @@ def verify_settingstable():
 def init_settingstable():
     conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), 'settings.db'))
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS settings (uid TEXT PRIMARY KEY AUTOINCREMENT, calorie_compensation INTEGER NOT NULL, protein_goal INTEGER NOT NULL, display_calories INTEGER NOT NULL, display_protein INTEGER NOT NULL, display_fat INTEGER NOT NULL, display_carbs INTEGER NOT NULL)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS settings (uid TEXT PRIMARY KEY, calorie_compensation INTEGER NOT NULL, protein_goal INTEGER NOT NULL, display_calories INTEGER NOT NULL, display_protein INTEGER NOT NULL, display_fat INTEGER NOT NULL, display_carbs INTEGER NOT NULL)')
     conn.commit()
     conn.close()
 
