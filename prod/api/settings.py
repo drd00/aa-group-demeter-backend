@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from db import settings
+from api.db.default_settings import DEFAULT_SETTINGS
 
 app = Flask(__name__)
 api = Api(app)
@@ -21,7 +22,9 @@ class UserSettings(Resource):
             }
             return jsonify(settings_dict)
         else:
-            return jsonify({'message': 'User settings not found'}), 404
+            # Modify default settings here
+            DEFAULT_SETTINGS['uid'] = uid
+            return jsonify(DEFAULT_SETTINGS)
 
 # Endpoint to update user settings
 class UpdateUserSettings(Resource):

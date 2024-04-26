@@ -1,6 +1,8 @@
 import sqlite3
 import os
 
+from default_settings import DEFAULT_SETTINGS
+
 def verify_settingstable():
     if not os.path.exists(os.path.join(os.path.dirname(__file__), 'settings.db')):
         init_settingstable()
@@ -28,7 +30,10 @@ def get_settings(uid):
     cursor.execute('SELECT * FROM settings WHERE uid = ?', (uid,))
     settings = cursor.fetchone()
     conn.close()
-    return settings
+    if settings:
+        return settings
+    else:
+        return DEFAULT_SETTINGS
 
 
 def create_settings(uid, calorie_compensation, protein_goal, display_calories, display_protein, display_fat, display_carbs):
