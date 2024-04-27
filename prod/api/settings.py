@@ -1,39 +1,40 @@
-from flask import Flask, request, jsonify
-from flask_restful import Api, Resource
-from db import settings
-
-app = Flask(__name__)
-api = Api(app)
+from flask import request, jsonify
+from flask_restful import Resource
+from api.db.settings import get_settings, update_settings
+from api.db.default_settings import DEFAULT_SETTINGS
+from api.security.verify_token import verify_token
+import json
 
 # Endpoint to get user settings by user ID
-class UserSettings(Resource):
-    def get(self, uid):
-        settings_data = settings.get_settings(uid)
+class Settings(Resource):
+    method_decorators = [verify_token]
+    def get(self, **kwargs):
+        uid = kwargs.get('user_id')
+        settings_data = get_settings(uid)
+
         if settings_data:
             settings_dict = {
-                'uid': settings_data[0],
-                'calorie_compensation': settings_data[1],
-                'protein_goal': settings_data[2],
-                'display_calories': settings_data[3],
-                'display_protein': settings_data[4],
-                'display_fat': settings_data[5],
-                'display_carbs': settings_data[6]
+                'uid': settings_data["uid"],
+                'calorie_compensation': settings_data["calorie_compensation"],
+                'protein_goal': settings_data["protein_goal"],
+                'display_calories': settings_data["display_calories"],
+                'display_protein': settings_data["display_protein"],
+                'display_fat': settings_data["display_fat"],
+                'display_carbs': settings_data["display_carbs"]
             }
-            return jsonify(settings_dict)
+            return settings_dict, 200
         else:
-            return jsonify({'message': 'User settings not found'}), 404
+            default_set = DEFAULT_SETTINGS
+            default_set['uid'] = uid
+            return default_set, 200
+    
+    def post(self, **kwargs):
+        uid = kwargs.get('user_id')
+        updated_settings = request.get_json()
+        json_settings = json.loads(updated_settings)
+        update = update_settings(uid, calorie_compensation=json_settings['calorie_compensation'], protein_goal=json_settings['protein_goal'], display_calories=json_settings['display_calories'], display_protein=json_settings['display_protein'], display_fat=json_settings['display_fat'], display_carbs=json_settings['display_carbs'])
 
-# Endpoint to update user settings
-class UpdateUserSettings(Resource):
-    def put(self, uid):
-        # Get the updated settings from the request body
-        updated_settings = request.json
-        # Update the settings in the database
-        settings.update_settings(uid, **updated_settings)
-        return jsonify({'message': 'User settings updated successfully'})
-
-api.add_resource(UserSettings, '/api/settings/<int:uid>')
-api.add_resource(UpdateUserSettings, '/api/settings/<int:uid>')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        if update is not None:
+            return {"message": 'OK'}, 200
+        else:
+            return {"message": "Initial settings not found"}, 404
