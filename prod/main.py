@@ -8,6 +8,7 @@ from api.security.firebase import initialise_firebase
 from api.profile import Profile 
 from api.searchfood import SearchFood
 from api.diary import Diary
+from api.similar_recommondations import FoodPreference
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 print(dotenv_path)
@@ -28,6 +29,7 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}}, method
 
 api.add_resource(SearchFood, '/searchfood/<string:food_name>')
 api.add_resource(Profile, '/profile')
+api.add_resource(FoodPreference, '/get_food_preference')
 api.add_resource(Diary, '/diary')
 
 if __name__ == '__main__':
