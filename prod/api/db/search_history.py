@@ -46,7 +46,7 @@ def init_searchtable():
     conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), 'search_history.db'))
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS search (uid TEXT, search TEXT, timestamp TEXT, prediction_weight REAL, PRIMARY KEY (uid, search, timestamp))')
+    cursor.execute('CREATE TABLE IF NOT EXISTS search (uid TEXT, search TEXT, timestamp TEXT, prediction_weight REAL, attrs TEXT, PRIMARY KEY (uid, search, timestamp))')
     conn.commit()
     conn.close()
 
@@ -75,17 +75,18 @@ def get_search_history(uid):
             "uid": searchRow['uid'],
             "search": searchRow['search'],
             "timestamp": searchRow['timestamp'],
-            "prediction_weight": searchRow['prediction_weight']
+            "prediction_weight": searchRow['prediction_weight'],
+            "attrs": searchRow['attrs']
         }
         search_history.append(search)
     return search_history
 
 
-def insert_search_history(uid, search, timestamp, prediction_weight):
+def insert_search_history(uid, search, timestamp, prediction_weight, attrs):
     verify_searchtable()
     conn = sqlite3.connect(os.path.join(os.path.dirname(__file__), 'search_history.db'))
     cursor = conn.cursor()
-    cursor.execute('INSERT OR REPLACE INTO search (uid, search, timestamp, prediction_weight) VALUES (?, ?, ?, ?)', (uid, search, timestamp, prediction_weight))
+    cursor.execute('INSERT OR REPLACE INTO search (uid, search, timestamp, prediction_weight, attrs) VALUES (?, ?, ?, ?, ?)', (uid, search, timestamp, prediction_weight, attrs))
     conn.commit()
     conn.close()
 
@@ -100,7 +101,7 @@ def probabilistic_sample_recommender(uid, n_samples=10):
     conn.close()
 
     # Sum over all weights in searchRows.
-    sum_weights = sum(searchRow['prediction_weight'] for searchRow in searchRows)
+    sum_weights = sum(float(searchRow['prediction_weight']) for searchRow in searchRows)
     if sum_weights == 0:
         return None
     
@@ -115,6 +116,7 @@ def probabilistic_sample_recommender(uid, n_samples=10):
         for searchRow, weight in zip(searchRows, normalised_weights):
             cumulative += weight
             if sample <= cumulative:
-                search_samples.append(searchRow['search'])
+                search_samples.append((searchRow['search'], searchRow['attrs']))
+                break
 
     return search_samples

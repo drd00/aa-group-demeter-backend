@@ -6,13 +6,12 @@ class Recommendations(Resource):
     method_decorators = [verify_token]
 
     def get(self, **kwargs):
-        uid = kwargs.get('uid')
-
+        uid = kwargs.get('user_id')
         verify_searchtable()
 
         # Sample from the table 10 times.
         recommendations = []
-        n_samples = 10
+        n_samples = 5
         recommendations = probabilistic_sample_recommender(uid, n_samples)  # Python list
 
         if len(recommendations) == 0:

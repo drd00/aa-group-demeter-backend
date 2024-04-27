@@ -9,6 +9,7 @@ from api.profile import Profile
 from api.searchfood import SearchFood
 from api.diary import Diary
 from api.settings import Settings
+from api.recommendations import Recommendations
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path, override=True)
@@ -27,6 +28,8 @@ api.add_resource(SearchFood, '/searchfood/<string:food_name>')
 api.add_resource(Profile, '/profile')
 api.add_resource(Diary, '/diary')
 api.add_resource(Settings, '/settings')
+api.add_resource(Recommendations, '/prob-recommendations')
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
+
